@@ -113,20 +113,22 @@ Simple dashboard with:
 | **Visualization** | Looker Studio (Google Data Studio) |
 
 ## Repository Structure  
+
+```
 investment-portfolio-pipeline/
 ├── README.md
 ├── data/
-│   └── investment_transactions_36_months.csv           # Sample transaction data (36 months)
+│   └── 002_investment_transactions_36_months.csv           # Sample transaction data (36 months)
 │
 ├── notebooks/
-│   └── 01_data_pipeline_colab.ipynb                    # Colab notebook for data ingestion & upload to BigQuery
+│   └── 101_data_pipeline_colab.ipynb                    # Colab notebook for data ingestion & upload to BigQuery
 │
 ├── sql/
-│   ├── 01_create_market_prices_eur.sql                 # Convert market prices from USD to EUR
-│   ├── 02_transactions_with_qty.sql                    # Compute quantity per purchase date
-│   ├── 03_daily_holdings_basic.sql                     # Daily portfolio valuation & PnL logic
-│   └── 04_portfolio_agg_and_benchmark.sql              # Aggregate portfolio totals & benchmark comparison
+│   ├── 201_portfolio_snapshot.sql                 # Total Performance
+│   ├── 202_daily_holdings_basic.sql               # Daily portfolio valuation & PnL
+│   ├── 203_market_prices_enriched.sql             # Market Price in EUR with daily changes
 │
 └── screenshots/
     ├── pipeline_architecture.png                       # Project architecture diagram (Colab → BigQuery → Looker)
     └── looker_sample_dashboard.png                     # Simple Looker dashboard preview
+```
