@@ -1,0 +1,17 @@
+CREATE or REPLACE TABLE `portfolio.market_prices_enriched` AS
+SELECT
+  m.date,
+  m.ticker,
+  m.price_usd * f.EUR_USD_rate AS price_eur,
+  (m.price_usd * f.EUR_USD_rate) 
+    - LAG(m.price_usd * f.EUR_USD_rate) OVER (PARTITION BY m.ticker ORDER BY m.date) AS daily_change_eur,
+  ROUND(
+    ((m.price_usd * f.EUR_USD_rate) 
+      - LAG(m.price_usd * f.EUR_USD_rate) OVER (PARTITION BY m.ticker ORDER BY m.date))
+    / LAG(m.price_usd * f.EUR_USD_rate) OVER (PARTITION BY m.ticker ORDER BY m.date)
+    * 100, 2
+  ) AS daily_pct_change_eur
+FROM `portfolio.market_prices` m
+LEFT JOIN `portfolio.fx_rates` f
+  ON m.date = f.date
+ORDER BY m.date, m.ticker;
