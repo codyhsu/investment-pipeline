@@ -98,17 +98,36 @@ Simple dashboard with:
 
 ## Insights  
 - The portfolio shows a **+ 12.9 % total return** with **4.14 % annual growth rate** within 3 years. This is positive yet lags 12% behind the index and not achieves an avg 8 - 10%.
-- **Equities (SPY, VGK)** drove performance with 28% and 18%.
-- **Bonds(BNDX, IEF)** yielded light loss with ~1%, which fits the broader market environment where interest rates have been rising. Bond prices typically fall in that scenario.
-- **Cash (SHV)** shows a minor loss, indicating limited return from cash-like positions.
-- Current Allocation is with 65/ 35 rather conservative
-- 
-- periodic rebalnce
-- risk exposure
+- **Equities (SPY, VGK)** drove performance with 28% and 18% respectively.
+- **Bonds(BNDX, IEF)** yielded small loss with ~1%, consistent with a rising-rate environment where bond prices typically fall.
+- **Cash (SHV)** shows a minor loss / near-zero real return, indicating limited return from cash-like positions.
+- Overall the portfolio is tilted toward lower-risk assets, which helps stability but limits long-term return potential.
 
-- Demonstrates how **BigQuery SQL** can handle PnL, returns, and benchmark tracking at scale.  
-- Modular design allows future expansion (risk metrics, automation, BI integration).
+## Recommendations
 
+**1.Target Allocation**
+
+Current Allocation is with 65% Stock/ 35% Bonds. 
+- Younger investors: prioritize growth like 80% ~ 90% Stocks / 10% ~ 20% Bonds.
+- Mid-career: consider 60% ~ 75% equities / 25% ~ 40% bonds depending on goals and risk tolerance
+- Near-retirement / retired: consider 30%~40% equities / 50%~60% bonds + cash for income and capital preservation.
+
+**2.Strategic Equity Management (Growth)**
+   - Hold SPY and VGK. They are high-quality, diversified ETFs showing strong gains.
+   - Consider exposure to other high growth, area in interested ....
+   - Use dollar-cost averaging when adding growth exposure to reduce timing risk.
+     
+**3. Fixed Income Management (Stability)**
+   - IEF (Intermediate-Term Treasury) is more sensitive to interest rate changes while SHV (Short-Term Treasury) is less sensitive to interest rate changes. Consider selling IEF and SHV to reduce duration exposure.
+   - Keep a core bond allocation to provide diversification and income; increase via contributions rather than large market-timing trades.
+   - 
+**4. Rebalanc and Monitor**
+- Review allocation periodically to to maintain the Allocation. If stocks continue to outpace bonds, the stock allocation will naturally rise.
+- Prefer adding new contributions to underweight assets to drift back toward target before selling winners.
+- Re-evaluate risk exposure annually or after major life events (job change, inheritance, home purchase).
+
+
+  
 
 ## Tech Stack  
 | Layer | Tools |
