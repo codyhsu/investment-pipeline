@@ -80,26 +80,32 @@ Simple dashboard with:
 *(Looker visuals kept simple to highlight the SQL backend.)*
 
 
-## Results Summary (Oct 2025 snapshot)
+## Results Summary (Sept 2025 snapshot)
 
 | Metric | Definition | Result* |
 |---------|-------------|----------|
 | **Total Invested (EUR)** | Cumulative contributions | € 10,500.00 |
-| **Current Market Value (EUR)** | Valuation as of Oct 2025 | € 13,037.92 |
-| **Total PnL (EUR)** | Market Value − Invested | +€ 2,537.92 (+ 24.17 %) |
-| **Benchmark (S&P 500 EUR)** | Return since Nov 2022 | + 57.3 % |
-| **Investment CAGR (EUR)** | Market Value − Invested | 7.47 %|
+| **Current Market Value (EUR)** | Valuation as of Oct 2025 | € 11,859.55 |
+| **Total PnL (EUR)** | Market Value − Invested | +€ 1,359.55 (+ 12.95 %) |
+| **Investment CAGR (EUR)** | Market Value − Invested | + 4.14 %|
 | **Benchmark CAGR** | Return since Nov 2022 | + 16.28 % |
-| **Portfolio vs Benchmark** | Relative performance | − 33.13 pp |
+| **Portfolio vs Benchmark** | Relative performance | − 12.14 pp |
 | **Best Performer** | |**SPY (+ 27.75 %)** |
-| **Worst Performer** | | **IEF (+ 6.36 %)** |
+| **Worst Performer** | | **SHV (- 1.05 %)** |
 
-\* Values illustrative; computed dynamically in BigQuery.
+\* Values illustrative; computed in BigQuery.
 
 
 ## Insights  
-- Balanced allocation achieved **+ 6.9 % total return** with lower volatility than the S&P 500.  
-- **Equities (SPY, VGK)** drove performance; bonds reduced drawdowns.  
+- The portfolio shows a **+ 12.9 % total return** with **4.14 % annual growth rate** within 3 years. This is positive yet lags 12% behind the index and not achieves an avg 8 - 10%.
+- **Equities (SPY, VGK)** drove performance with 28% and 18%.
+- **Bonds(BNDX, IEF)** yielded light loss with ~1%, which fits the broader market environment where interest rates have been rising. Bond prices typically fall in that scenario.
+- **Cash (SHV)** shows a minor loss, indicating limited return from cash-like positions.
+- Current Allocation is with 65/ 35 rather conservative
+- 
+- periodic rebalnce
+- risk exposure
+
 - Demonstrates how **BigQuery SQL** can handle PnL, returns, and benchmark tracking at scale.  
 - Modular design allows future expansion (risk metrics, automation, BI integration).
 
