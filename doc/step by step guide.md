@@ -29,6 +29,7 @@ So the key is to pick something that:
 - A Google Account, that's all you need!
 
 ## 1. Data Ingestion — Colab (Python)
+
 **Objective**: read transactions CSV, pull prices & FX, and upload clean tables to BigQuery.
 
 ### 1.1 Set up 
@@ -39,7 +40,8 @@ So the key is to pick something that:
 - Change the share setting permission to anyone with the link.
 
 ### 1.2 Notebook structure
-notebook link:
+Python Code link (It's prertty well explained already): [Click Here](https://github.com/codyhsu/investment-pipeline/blob/main/101_Investment_Pipeline.ipynb)
+
 - Section A: Config
 - Section B: Load transactions CSV
 - Section C: Fetch price history for selected tickers (yfinance)
@@ -47,68 +49,75 @@ notebook link:
 - Section D: Fetch EUR/USD FX rates
 - Section F: Persist to BigQuery with pandas_gbq
 
-### 1.2 Example code snippets (replace placeholders)
+### 1.3 Example code snippets (replace placeholders)
 
-- Config
+- Confi
 ```python
-PROJECT_ID = "PROJECT_ID"
-DATASET = "GCP_DATASET"
-TICKERS = ["SPY","VGK","BNDX","IEF","SHV"]
-START_DATE = "2022-11-01"
-END_DATE = "2025-09-30"
+!pip install yfinance pandas google-cloud-bigquery pandas-gbq
 ```
 
 - Load transactions
+
+Please change the **file_id** to yours
+
 ```python
-import pandas as pd
-tx = pd.read_csv("data/002_investment_transactions_36_months.csv", parse_dates=["date"])
-tx.head()
+import pandas as pd, gdown
+
+# Load transaction data from google drive sharing link
+file_id = "100DlxpNsKOuS2MH6gWptI0KkGHpJyZnE"
+url = f"https://drive.google.com/uc?id={file_id}"
+output = "investment_transactions_36_months.csv"
+gdown.download(url, output, quiet=False)
+
+# Read the CSV file with semicolon as a delimiter
+transactions = pd.read_csv(output, sep=';')
+
+# Convert the 'date' column to datetime objects, specifying the format
+transactions['date'] = pd.to_datetime(transactions['date'], format='%d/%m/%Y')
+
+display(transactions.head())
 ```
 
 - Fetch prices (yfinance)
 ```python
 import yfinance as yf
-all_prices = []
-for t in TICKERS:
-    df = yf.download(t, start=START_DATE, end=END_DATE)
-    df = df[["Adj Close"]].rename(columns={"Adj Close":"price_usd"})
-    df["ticker"] = t
-    df = df.reset_index().rename(columns={"Date":"date"})
-    all_prices.append(df)
-prices = pd.concat(all_prices, ignore_index=True)
+import pandas as pd
+
+# Identify tickers, start and end date form transaction
+tickers = transactions.ticker.unique().tolist()
+start = transactions.date.min()
+end = transactions.date.max() + pd.Timedelta(days=7) # Extend end date by 7 days
+# include market index
+market_indices = ['^GSPC']
+all_tickers = market_indices + tickers
+#import desired tickers from yahoo finance
+raw_yf_data = yf.download(all_tickers, start=start, end=end)
+raw_yf_data.head()
+```
+- Resturcture the market data
+  
+```python
+yf_data = raw_yf_data.xs('Close', level=0, axis=1).stack().reset_index()
+yf_data.columns = ['date', 'ticker', 'price_usd']
+yf_data['date'] = pd.to_datetime(yf_data['date']) # Corrected: Convert the 'date' column within yf_data itself
+display(yf_data.head())
 ```
 
-- Fetch EUR/USD FX (example: exchangerate.host)
+- Fetch EUR/USD FX 
 ```python
 import requests
-fx = []
-date = pd.to_datetime(START_DATE)
-while date <= pd.to_datetime(END_DATE):
-    iso = date.strftime("%Y-%m-%d")
-    r = requests.get(f"https://api.exchangerate.host/{iso}?base=USD&symbols=EUR")
-    rate = r.json()["rates"]["EUR"]
-    fx.append({"date": iso, "usd_to_eur": rate})
-    date += pd.Timedelta(days=1)
-fx = pd.DataFrame(fx); fx["date"] = pd.to_datetime(fx["date"])
-```
+import pandas as pd
+import yfinance as yf
 
-- Merge and compute price_eur
-```python
-prices = prices.merge(fx, on="date", how="left")
-prices["price_eur"] = prices["price_usd"] * prices["usd_to_eur"]
-# Optional: forward-fill fx if missing, or use business-day calendar
-prices = prices.sort_values(["ticker", "date"]).ffill()
-```
+eur_usd_ticker = 'EURUSD=X'
+start_date = transactions['date'].min()
+end_date = transactions['date'].max() + pd.Timedelta(days=7) # Extend end date by 7 days
 
-- Compute quantity on transaction dates and upload
-```python
-# join tx with price on date to compute qty_per_tx
-tx_with_price = tx.merge(prices[["date","ticker","price_eur"]], on=["date","ticker"], how="left")
-tx_with_price["quantity"] = tx_with_price["amount_eur"] / tx_with_price["price_eur"]
+eur_usd_data = yf.download(eur_usd_ticker, start=start_date, end=end_date)
+eur_usd_data = eur_usd_data[['Close']].reset_index()
+eur_usd_data.columns = ['date', 'EUR_USD_rate']
 
-from pandas_gbq import to_gbq
-to_gbq(tx_with_price, f"{DATASET}.transactions_with_qty", project_id=PROJECT_ID, if_exists="replace")
-to_gbq(prices, f"{DATASET}.market_prices_eur", project_id=PROJECT_ID, if_exists="replace")
+display(eur_usd_data.head())
 ```
 
 1.3 Expected outputs
