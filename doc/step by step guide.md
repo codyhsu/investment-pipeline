@@ -2,45 +2,52 @@
 
 This section outlines the reproducible workflow behind the investment portfolio pipeline.
 
-🔁 End-to-End Flow: **Python → BigQuery → Looker Studio**
+🔁 End-to-End Flow: **Colab → BigQuery → Looker Studio**
+
+**Why do I chooose this combination**
+
+My goal is to build an end-to-end mini investment data pipeline, with
+
+- live market API 
+- transaction enrichment,
+- cloud storage, and
+- dashboard visualization  
+
+So the key is to pick something that:
+
+- Runs Python and SQL easily
+- Connects to the cloud
+- Doesn’t waste time on setup
+- It's free
 
 ## How to use this template
 - Replace placeholders (PROJECT_ID, GCP_DATASET, TABLE_NAME, GCS_BUCKET) with real values.
 - Follow steps in order: Prereqs → Ingestion → Modeling → Validation → Visualize → Schedule.
 - Keep small commits and document each change in the repo.
 
-## 0. Prerequisites (one-time)
--
-- Google account with BigQuery (Sandbox or paid).
-- GCP Project ID (PROJECT_ID).
-- BigQuery dataset name (GCP_DATASET).
-- Service account with BigQuery Admin or appropriate dataset permissions (if automating).
-- Local / Colab Python environment:
-  - pandas, pandas_gbq, yfinance, requests
-  - Optional: google-cloud-bigquery for advanced uploads
-- Files in repo:
-  - data/002_investment_transactions_36_months.csv
-  - notebooks/101_data_pipeline_colab.ipynb
-  - sql/*.sql
-
-Checklist:
-- [ ] Set GOOGLE_APPLICATION_CREDENTIALS (if running outside Colab)
-- [ ] Enable BigQuery API in GCP console
-- [ ] Confirm dataset exists: bq --project_id=PROJECT_ID mk -d GCP_DATASET
-
+## 0. Prerequisites
+- A Google Account, that's all you need!
 
 ## 1. Data Ingestion — Colab (Python)
-Objective: read transactions CSV, pull prices & FX, compute price in EUR, and upload clean tables to BigQuery.
+**Objective**: read transactions CSV, pull prices & FX, and upload clean tables to BigQuery.
 
-1.1 Notebook structure
-- Section A: Config (project, dataset, tickers, date range)
+### 1.1 Set up 
+
+- Go to colab.research.google.com
+- New Notebook → “Investment Pipeline” (or any name you like)
+- Upload **transactions.csv** to Google Drive
+- Change the share setting permission to anyone with the link.
+
+### 1.2 Notebook structure
+notebook link:
+- Section A: Config
 - Section B: Load transactions CSV
-- Section C: Fetch price history for tickers (yfinance)
-- Section D: Fetch EUR/USD FX rates (exchangerate.host or other)
-- Section E: Join prices + FX → compute price_eur
+- Section C: Fetch price history for selected tickers (yfinance)
+- Section D: Restructure the table and keep only the date, ticker and close price
+- Section D: Fetch EUR/USD FX rates
 - Section F: Persist to BigQuery with pandas_gbq
 
-1.2 Example code snippets (replace placeholders)
+### 1.2 Example code snippets (replace placeholders)
 
 - Config
 ```python
